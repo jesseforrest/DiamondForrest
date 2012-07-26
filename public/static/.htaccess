@@ -1,0 +1,49 @@
+# This file is used to configure Apache
+#
+# @version $Id$
+# @author Jesse Forrest <jesseforrest@gmail.com>
+# @package DiamondForrest
+# @copyright Copyright (c) 2011, DiamondForrest
+
+# Turn rewrite engine on
+RewriteEngine On
+
+# Redirect https robots.txt requests to robots-https.txt
+RewriteCond %{SERVER_PORT} ^443$
+RewriteRule ^robots\.txt$ robotshttps.txt
+
+# Stop users from being able to view contents of directories.  This will work 
+# for all subdirectories
+Options -Indexes
+
+# Far Future Expires Header and allow items to be cached publicly (good for SSL)
+<FilesMatch "\.(js|css|gif|png|jpg|ico|eot|svg|ttf|woff)$">
+ExpiresActive On
+ExpiresDefault "access plus 10 years" 
+Header set Cache-Control "public"
+</FilesMatch>
+
+# Compress text, html, javascript, css, xml:
+AddOutputFilterByType DEFLATE text/plain
+AddOutputFilterByType DEFLATE text/html
+AddOutputFilterByType DEFLATE text/xml
+AddOutputFilterByType DEFLATE text/css
+AddOutputFilterByType DEFLATE application/xml
+AddOutputFilterByType DEFLATE application/xhtml+xml
+AddOutputFilterByType DEFLATE application/rss+xml
+AddOutputFilterByType DEFLATE application/javascript
+AddOutputFilterByType DEFLATE application/x-javascript
+# Handle certain old browsers different for gzip 
+BrowserMatch ^Mozilla/4 gzip-only-text/html
+BrowserMatch ^Mozilla/4\.0[678] no-gzip
+BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
+
+# Rules for versioned static files
+# Redirects /js/example.1.js to /js/example.js
+# Once images are under autoversioning, then add gif|png|jpg|ico
+RewriteRule ^(js|css)/(.+)\.([0-9]+)\.(js|css)$ $1/$2.$4 [L]
+
+# Redirect to bootstrap file if the file or directory does not exist
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php [L,QSA]
