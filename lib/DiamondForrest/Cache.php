@@ -90,10 +90,31 @@ class Cache
         {
             return false;
         }
-        if (!$this->memcache->set($key, $value, 0, $expires))
+        
+        if (!$this->memcache->replace($key, $value, 0, $expires))
         {
-            return false;   
-        }        
+           if (!$this->memcache->set($key, $value, 0, $expires))
+           {
+               return false;   
+           }        
+        }
         return true;
+    }
+    
+    /**
+     * Removes the content stored in Memcache on the specified key.
+     * 
+     * @param string $key The key that was used to store the data.
+     * 
+     * @return boolean Returns true on success or false otherwise.
+     */
+    public function delete($key)
+    {
+       if (empty($key))
+       {
+          return false;
+       }
+       
+       return $this->memcache->delete($key);
     }
 }
