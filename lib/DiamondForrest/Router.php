@@ -15,7 +15,7 @@
 require_once 'Url.php';
 
 /**
- * This  class is in charge of interpreting the current URL and
+ * This class is in charge of interpreting the current URL and
  * determining which controller to instantiate. It also determines which method
  * to call (in MVC this is considered the "action") within the controller's
  * class.
@@ -27,13 +27,12 @@ require_once 'Url.php';
  * @license   https://github.com/jesseforrest/DiamondForrest License 1.0
  * @link      https://github.com/jesseforrest/DiamondForrest/wiki
  */
-
 class Router
 {
     /**
-     * Holds an associated array of available routes in the following format:
+     * Holds an array of available routes in the following format:
      * <code>
-     * $this->routes = array(
+     * $this->routes[] = array(
      *    'match' => '|/payments/[A-Za-z0-9]*|',
      *    'is_regex' => true,
      *    'controller' => 'modules/offers/controllers/Payments.php',
@@ -41,6 +40,7 @@ class Router
      *    'function' => 'show'
      * );
      * </code>
+     * 
      * @var array
      */
     protected $routes = array();
@@ -108,7 +108,7 @@ class Router
             $this->set404();
         }
         // Loop through all routes and attempt to find a match.
-        foreach ($routes as $i => $route)
+        foreach ($routes as $route)
         {
             // If route found
             if ((($route['is_regex']) && (preg_match($route['match'], $path)))
