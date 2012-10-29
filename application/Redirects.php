@@ -52,7 +52,9 @@ class Redirects
     public function setRedirects()
     {
         // Example redirect from /old-page to /new-page
-        $this->redirect->setRedirect('/old-page', '/new-page');
+        $this->redirect->setRedirect(
+            '/old-page', 
+            '/new-page');
         
         // Example regular expression redirect from /old-page/123/page 
         // to /new-page/123/page

@@ -30,9 +30,9 @@ require_once 'Url.php';
 class Router
 {
     /**
-     * Holds an array of available routes in the following format:
+     * Holds an associative array of available routes in the following format:
      * <code>
-     * $this->routes[] = array(
+     * $this->routes['|/payments/[A-Za-z0-9]*|'] = array(
      *    'match' => '|/payments/[A-Za-z0-9]*|',
      *    'is_regex' => true,
      *    'controller' => 'modules/offers/controllers/Payments.php',
@@ -66,7 +66,7 @@ class Router
     public function setRoute($match, $isRegex, $controller, $class,
         $function)
     {
-        $this->routes[] = array(
+        $this->routes[$match] = array(
             'match' => $match,
             'is_regex' => $isRegex,
             'controller' => $controller,
@@ -77,39 +77,76 @@ class Router
      
     /**
      * This class will loop over the available routes and attempt to instantiate
-     * the controller.  If it fails to find an available route it will set a
-     * 404 header and exit the application.
-     * 
+     * the controller.
+     *
      * @return void
      */
     public function route()
     {
-        $routes = $this->routes;
-        
         $path = Url::getPath();
-        
+
         // If no routes exist, set 404
-        if (count($routes) == 0) 
+        if (count($this->routes) == 0)
         {
             return;
         }
-        
-        // Loop through all routes and attempt to find a match.
-        foreach ($routes as $route)
+
+        // Check if exact match (cheap)
+        if ((isset($this->routes[$path])) 
+            && (!$this->routes[$path]['is_regex']))
         {
+            $this->dispatch($this->routes[$path]);
+            exit;
+        }
+
+        // Loop through all routes and attempt to find a match. (expensive)
+        foreach ($this->routes as $i => $route)
+        {
+            $matches = null;
+
             // If route found
-            if ((($route['is_regex']) && (preg_match($route['match'], $path)))
-                || ((!$route['is_regex']) && ($route['match'] == $path)))
+            if (($route['is_regex']) 
+                && (preg_match($route['match'], $path, $matches)))
             {
-                if (file_exists(dirname(__FILE__)
-                    . '/../../application/' . $route['controller']))
+                // Remove full match from array list
+                array_shift($matches);
+
+                $this->dispatch($route, $matches);
+                exit;
+            }
+        }
+    }
+    
+    /**
+     * This function will dispatch the current route
+     *
+     * @param array      $route      The route to be dispatched
+     * @param array|null $parameters An array of parameters to be passed to the
+     *                               controller's function
+     *
+     * @return void
+     */
+    public function dispatch($route, $parameters = null)
+    {
+        include_once $route['controller'];
+
+        if ($route['class'] !== null)
+        {
+            $controller = new $route['class']();
+            if ($route['function'] !== null)
+            {
+                // If parameters should be passed to controller's function
+                if (($parameters !== null) && (count($parameters) > 0))
                 {
-                    include_once $route['controller'];
-                    $controller = new $route['class']();
-                    $controller->$route['function']();
-                    exit;
+                    call_user_func_array(
+                        array($controller, $route['function']),
+                        $parameters);
                 }
-                return;
+                // No parameters need to be passed
+                else
+                {
+                    $controller->$route['function']();
+                }
             }
         }
     }
