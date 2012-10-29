@@ -8,10 +8,6 @@
 # Turn rewrite engine on
 RewriteEngine On
 
-# Redirect https robots.txt requests to robots-https.txt
-RewriteCond %{SERVER_PORT} ^443$
-RewriteRule ^robots\.txt$ robotshttps.txt
-
 # Stop users from being able to view contents of directories.  This will work 
 # for all subdirectories
 Options -Indexes
@@ -42,8 +38,3 @@ BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
 # Redirects /js/example.1.js to /js/example.js
 # Once images are under autoversioning, then add gif|png|jpg|ico
 RewriteRule ^(js|css)/(.+)\.([0-9]+)\.(js|css)$ $1/$2.$4 [L]
-
-# Redirect to bootstrap file if the file or directory does not exist
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ index.php [L,QSA]
