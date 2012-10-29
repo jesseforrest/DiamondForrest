@@ -156,6 +156,7 @@ switch ($environment)
         header('HTTP/1.0 400 Bad Request');
         exit;
 }
+
 // Setup environment related settings
 Setup::setupEnvironmentSettings();
 
