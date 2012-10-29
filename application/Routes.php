@@ -12,7 +12,7 @@
  * @link      https://github.com/jesseforrest/DiamondForrest/wiki
  */
 
-require_once 'DiamondForrest/Router.php';
+require_once 'lib/DiamondForrest/Router.php';
 
 /**
  * This class is in charge of interpreting the current URL and determining which
@@ -57,8 +57,7 @@ class Routes
     
     /**
      * This will loop over the available routes and attempt to instantiate
-     * the controller.  If it fails to find an available route it will set a
-     * 404 header and exit the application.
+     * the controller.
      *
      * @return void
      */

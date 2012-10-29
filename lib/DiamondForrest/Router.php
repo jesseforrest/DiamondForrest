@@ -76,20 +76,6 @@ class Router
     }
      
     /**
-     * This function will set a 404 (page not found) header and exit the
-     * application.
-     * 
-     * @return void
-     *
-     * @codeCoverageIgnore
-     */
-    protected function set404()
-    {
-        header('HTTP/1.0 404 Not Found');
-        exit;
-    }
-     
-    /**
      * This class will loop over the available routes and attempt to instantiate
      * the controller.  If it fails to find an available route it will set a
      * 404 header and exit the application.
@@ -105,8 +91,9 @@ class Router
         // If no routes exist, set 404
         if (count($routes) == 0) 
         {
-            $this->set404();
+            return;
         }
+        
         // Loop through all routes and attempt to find a match.
         foreach ($routes as $route)
         {
@@ -120,13 +107,10 @@ class Router
                     include_once $route['controller'];
                     $controller = new $route['class']();
                     $controller->$route['function']();
-                    return;
+                    exit;
                 }
-                $this->set404();
+                return;
             }
         }
-
-        // No matches so set 404 error
-        $this->set404();
     }
 }

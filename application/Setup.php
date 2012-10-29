@@ -59,13 +59,10 @@ class Setup
                 $rootDirectory .= '/' . $parts[$i];
             }
         }
-        $applicationDirectory = $rootDirectory . '/application';
-        $libDirectory = $rootDirectory . '/lib';
 
         // Add directories to include path
         set_include_path(get_include_path()
-           . PATH_SEPARATOR . $applicationDirectory
-           . PATH_SEPARATOR . $libDirectory);
+           . PATH_SEPARATOR . $rootDirectory);
     }
      
     /**
@@ -137,23 +134,23 @@ class Setup
 Setup::setupIncludePath();
 
 // Include Url class
-require_once 'DiamondForrest/Url.php';
+require_once 'lib/DiamondForrest/Url.php';
 
 // Include necessary config file or exit if invalid host name was passed in
 $environment = Setup::getEnvironment();
 switch ($environment)
 {
     case 'production':
-        include_once 'configurations/configProduction.php';
+        include_once 'application/configurations/configProduction.php';
         break;
     case 'staging':
-        include_once 'configurations/configStaging.php';
+        include_once 'application/configurations/configStaging.php';
         break;
     case 'development':
-        include_once 'configurations/configDevelopment.php';
+        include_once 'application/configurations/configDevelopment.php';
         break;
     case 'local':
-        include_once 'configurations/configLocal.php';
+        include_once 'application/configurations/configLocal.php';
         break;
     case null:
         header('HTTP/1.0 400 Bad Request');
@@ -167,3 +164,13 @@ require_once 'application/Routes.php';
 $routes = new Routes();
 $routes->setRoutes();
 $routes->route();
+
+// Instantiate the Redirects to redirect to the necessary URL if necessary
+require_once 'application/Redirects.php';
+$redirects = new Redirects();
+$redirects->setRedirects();
+$redirects->redirect();
+
+// Set 404 if no route or redirect was found
+header('HTTP/1.0 404 Not Found');
+exit;
