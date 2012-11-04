@@ -28,7 +28,7 @@ require_once 'Url.php';
 class Redirect
 {
     /**
-     * Holds an associative array of available redirects in the following 
+     * Holds an associative array of available redirects in the following
      * format:
      * <code>
      * $this->redirects['/old-url'] = array(
@@ -43,15 +43,21 @@ class Redirect
      *    'redirect' => '/new-url/%s'
      *    'status_code' => 301
      * );
+     * $this->redirects['|/old-url/([A-Za-z0-9]*)|'] = array(
+     *    'match' => '|/old-url/([A-Za-z0-9]*)|',
+     *    'is_regex' => true,
+     *    'redirect' => function($page) { return '/new-url/' . $page; }
+     *    'status_code' => 301
+     * );
      * </code>
-     * 
+     *
      * @var array
      */
     protected $redirects = array();
-    
+
     /**
      * Holds a list of HTTP status codes
-     *  
+     *
      * @var array
      */
     static protected $statusCodes = array(
@@ -94,19 +100,26 @@ class Redirect
         502 => 'HTTP/1.1 502 Bad Gateway',
         503 => 'HTTP/1.1 503 Service Unavailable',
         504 => 'HTTP/1.1 504 Gateway Time-out');
-             
+
     /**
-     * Set a simple redirect.  This function does not allow for regular 
+     * Set a simple redirect.  This function does not allow for regular
      * expression matches.
-     * 
-     * @param string $match      This is the path portion of the URL that you
-     *                           want to match against. An example string would
-     *                           be: "<code>/example/old-url</code> 
-     * @param string $redirect   This is the URL to redirect to if there is a 
-     *                           match.
-     * @param string $statusCode The status code that should be set before the
-     *                           redirect. The default is <code>301</code>, 
-     *                           which is Moved Permanently.
+     *
+     * @param string         $match      This is the path portion of the URL that
+     *                                   you want to match against. An example
+     *                                   string would be:
+     *                                   <code>/example/old-url</code>
+     * @param string|closure $redirect   If a string is passed in, it should be
+     *                                   the URL to redirect to if there
+     *                                   is a match.  If a closure is passed in,
+     *                                   the closure should return a URL to
+     *                                   redirect to. If the closure cannot
+     *                                   determine a URL to redirect to, it
+     *                                   should return <var>null</var>.
+     * @param string         $statusCode The status code that should be set
+     *                                   before the redirect. The default is
+     *                                   <code>301</code>, which is Moved
+     *                                   Permanently.
      *
      * @return void
      */
@@ -119,22 +132,22 @@ class Redirect
             'status_code' => $statusCode
         );
     }
-    
+
     /**
      * Set a regular expression redirect.
-     * 
+     *
      * @param string $match      This is the path portion of the URL that you
      *                           want to match against. An example string would
-     *                           be: "<code>/example/old-url/([0-9]*)</code> 
-     * @param string $redirect   This is the URL to redirect to if there is a 
+     *                           be: <code>/example/old-url/([0-9]*)</code>
+     * @param string $redirect   This is the URL to redirect to if there is a
      *                           match.  This string should be in the format
      *                           that is passed to the <code>sprintf</code>
-     *                           function.  All matches found from the regex 
-     *                           <code>$match</code> will be passed as 
+     *                           function.  All matches found from the regex
+     *                           <code>$match</code> will be passed as
      *                           parameters to sprintf, with this string being
      *                           the format string.
      * @param string $statusCode The status code that should be set before the
-     *                           redirect. The default is <code>301</code>, 
+     *                           redirect. The default is <code>301</code>,
      *                           which is Moved Permanently.
      *
      * @return void
@@ -148,7 +161,7 @@ class Redirect
             'status_code' => $statusCode
         );
     }
-     
+
     /**
      * This class will loop over the available redirects and redirect if any
      * are found.
@@ -159,6 +172,8 @@ class Redirect
     {
         $path = Url::getPath();
 
+        $redirectUrl = '';
+
         // Return if no redirects exist
         if (count($this->redirects) == 0)
         {
@@ -167,21 +182,35 @@ class Redirect
 
         // Check if exact match (cheap)
         if ((isset($this->redirects[$path]))
-                && (!$this->redirects[$path]['is_regex']))
+            && (!$this->redirects[$path]['is_regex']))
         {
             $statusCode = $this->redirects[$path]['status_code'];
-            $redirectUrl = $this->redirects[$path]['redirect'];
-             
+            $redirect = $this->redirects[$path]['redirect'];
+
             // Return if status code not found
             if (!isset(self::$statusCodes[$statusCode]))
             {
                 return;
             }
              
-            // Redirect
-            header(self::$statusCodes[$statusCode]);
-            header ('Location: ' . $redirectUrl);
-            exit;
+            // If closure
+            if (is_callable($redirect))
+            {
+                $redirectUrl = $redirect();
+            }
+            // If exact redirect
+            else
+            {
+                $redirectUrl = $redirect;
+            }
+             
+            if ($redirectUrl !== null)
+            {
+                // Redirect
+                header(self::$statusCodes[$statusCode]);
+                header ('Location: ' . $redirectUrl);
+                exit;
+            }
         }
 
         // Loop through all regex redirects and attempt to find a match.
@@ -195,27 +224,43 @@ class Redirect
             {
                 continue;
             }
-            
+
             // If redirect found
             if (preg_match($redirect['match'], $path, $matches))
             {
                 $statusCode = $redirect['status_code'];
-                $format = $redirect['redirect'];
-                 
+
                 // Return if status code not found
                 if (!isset(self::$statusCodes[$statusCode]))
                 {
                     return;
                 }
-                
+
                 // Remove full match from array list
                 array_shift($matches);
-                
-                // Gather parameters array that needs to be passed to sprintf
-                $parameters = array_merge(array($format), $matches);
-                
-                // Determine redirect URL
-                $redirectUrl = call_user_func_array('sprintf', $parameters);
+
+                // If closure
+                if (is_callable($redirect['redirect']))
+                {
+                    $closure = $redirect['redirect'];
+                    $redirectUrl = call_user_func_array($closure, $matches);
+                    if ($redirectUrl === null)
+                    {
+                        continue;
+                    }
+                }
+                // If sprintf
+                else
+                {
+                    $format = $redirect['redirect'];
+                     
+                    // Gather parameters array that needs to be passed to 
+                    // sprintf
+                    $parameters = array_merge(array($format), $matches);
+
+                    // Determine redirect URL
+                    $redirectUrl = call_user_func_array('sprintf', $parameters);
+                }
 
                 // Redirect
                 header(self::$statusCodes[$statusCode]);
