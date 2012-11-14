@@ -80,7 +80,7 @@ class Url
      * the URL is 
      * <code>http://www.example.com/folder/example.php?param=true</code>
      * then this function would return 
-     * <code>/folder/example.php?param=true</code>
+     * <code>/folder/example.php</code>
      * 
      * @return string|null Returns the path on success or <var>null</var> if
      * it cannot be determined.
