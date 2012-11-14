@@ -82,10 +82,16 @@ class Url
      * then this function would return 
      * <code>/folder/example.php?param=true</code>
      * 
-     * @return string
+     * @return string|null Returns the path on success or <var>null</var> if
+     * it cannot be determined.
      */
     static public function getPath()
     {
+        if (!isset($_SERVER['REQUEST_URI']))
+        {
+            return null;
+        }
+        
         $uri = $_SERVER['REQUEST_URI'];
         $uriParts = explode('?', $uri);
         return $uriParts[0];
