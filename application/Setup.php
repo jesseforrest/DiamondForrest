@@ -49,8 +49,6 @@ class Setup
         $parts = explode('/', $cwd);
         $count = count($parts);
         $rootDirectory = '';
-        $applicationDirectory = '';
-        $libDirectory = '';
 
         if ($count > 2)
         {

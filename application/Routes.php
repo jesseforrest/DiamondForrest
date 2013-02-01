@@ -77,7 +77,7 @@ class Routes
         // Example URL: example.com/
         $match       = '/';
         $isRegex     = false;
-        $controller  = 'controllers/ControllerHome.php';
+        $controller  = 'application/controllers/ControllerHome.php';
         $class       = 'ControllerHome';
         $function    = 'show';
         $this->router->setRoute(
