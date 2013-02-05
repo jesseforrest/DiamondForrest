@@ -453,6 +453,7 @@ class Page
             echo ''
                 . '<div id="toggle_button" '
                     . 'style="'
+                        . 'z-index: 1000;'
                         . 'font-family:Arial, Verdana, sans-serif;'
                         . 'font-weight:bold;'
                         . 'color:white;'
