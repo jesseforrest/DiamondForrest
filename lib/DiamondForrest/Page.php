@@ -247,8 +247,7 @@ class Page
      */
     protected function getDocTypeHtml()
     {
-        return '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" '
-            . '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
+        return '<!DOCTYPE HTML>';
     }
 
     /**
@@ -392,7 +391,7 @@ class Page
         }
 
         echo $this->getDocTypeHtml()
-            . '<html xmlns="http://www.w3.org/1999/xhtml">'
+            . '<html lang="en">'
             . '<head>'
                 . $this->getContentTypeHtml()
                 . $this->getRobotsHtml()
