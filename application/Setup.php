@@ -158,6 +158,10 @@ switch ($environment)
 // Setup environment related settings
 Setup::setupEnvironmentSettings();
 
+// Attempt to connect the base Model class to the database
+require_once 'lib/DiamondForrest/Model.php';
+Model::connect();
+
 // Instantiate the Routes class to route to the necessary controller
 require_once 'application/Routes.php';
 $routes = new Routes();

@@ -28,5 +28,64 @@ require_once 'Cache.php';
  */
 abstract class Model
 {
-   // Stub
+   /**
+    * Holds an instance of the Database
+    *
+    * @var Database|null
+    */
+   static protected $database = null;
+
+   /**
+    * This function attempts to connect to the database. If it cannot connect
+    * it will set a 503 error and exit. This function must be called prior to
+    * making any database calls.
+    *
+    * @return void
+    */
+   static public function connect()
+   {
+      try
+      {
+         if (self::$database === null)
+         {
+            self::$database = new Database(
+               DB_SERVER,
+               DB_USER,
+               DB_PASS,
+               DB_NAME,
+               DB_PORT);
+         }
+      }
+      catch (Exception $e)
+      {
+         // Set a 503 error and exit because no connection to MySQL server
+         header('HTTP/1.1 503 Service Temporarily Unavailable');
+         header('Status: 503 Service Temporarily Unavailable');
+         header('Retry-After: 60');
+         exit;
+      }
+   }
+
+   /**
+    * Returns the name of the database table based on the model.
+    *
+    * @return string
+    */
+   static public function getTableName()
+   {
+      // Strip "Model" from class name
+      $name = substr(get_called_class(), strlen('Model'));
+      // Make plural
+      if (substr($name, -1) == 'y')
+      {
+         $name = substr($name, 0, strlen($name) - 1) . 'ies';
+      }
+      else
+      {
+         $name .= 's';
+      }
+      // Convert camel case to lower case with underscores
+      $name = strtolower(preg_replace('/([a-z])([A-Z])/', '$1_$2', $name));
+      return $name;
+   }
 }

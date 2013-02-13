@@ -96,7 +96,7 @@ class Database
     * @param integer $port     The port the database should connect to
     * @param boolean $log      Whether or not to log queries
     *
-    * @return boolean Returns true on success or false otherwise
+    * @return void
     */
    public function __construct($server, $user, $pass, $database, $port = 3306,
          $log = true)
@@ -114,9 +114,8 @@ class Database
 
       if (!$this->connection)
       {
-         return false;
+         throw new Exception('Unable to connect to MySQL server');
       }
-      return true;
    }
     
    /**
