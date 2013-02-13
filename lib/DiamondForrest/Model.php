@@ -28,5 +28,5 @@ require_once 'Cache.php';
  */
 abstract class Model
 {
-    // Stub
+   // Stub
 }

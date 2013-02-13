@@ -27,50 +27,50 @@ require_once 'lib/DiamondForrest/Redirect.php';
  */
 class Redirects
 {
-    /**
-     * This class holds all the Redirects
-     * 
-     * @var Redirect|null
-     */
-    protected $redirect = null;
-    
-    /**
-     * Class constructor
-     * 
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->redirect = new Redirect();
-    }
-    
-    /**
-     * This function sets all applicable URL redirects
-     * 
-     * @return void
-     */
-    public function setRedirects()
-    {
-        // Example redirect from /old-page to /new-page
-        $this->redirect->setRedirect(
-            '/old-page', 
-            '/new-page');
-        
-        // Example regular expression redirect from /old-page/123/page 
-        // to /new-page/123/page
-        $this->redirect->setRegexRedirect(
-            '|/old-page/([0-9]*)/page|', 
-            '/new-page/%u/page');
-    }
-    
-    /**
-     * This will loop over the available redirects and attempt to redirect if
-     * a match exists.
-     *
-     * @return void
-     */
-    public function redirect()
-    {
-       $this->redirect->redirect(); 
-    }
+   /**
+    * This class holds all the Redirects
+    *
+    * @var Redirect|null
+    */
+   protected $redirect = null;
+
+   /**
+    * Class constructor
+    *
+    * @return void
+    */
+   public function __construct()
+   {
+      $this->redirect = new Redirect();
+   }
+
+   /**
+    * This function sets all applicable URL redirects
+    *
+    * @return void
+    */
+   public function setRedirects()
+   {
+      // Example redirect from /old-page to /new-page
+      $this->redirect->setRedirect(
+         '/old-page',
+         '/new-page');
+
+      // Example regular expression redirect from /old-page/123/page
+      // to /new-page/123/page
+      $this->redirect->setRegexRedirect(
+         '|/old-page/([0-9]*)/page|',
+         '/new-page/%u/page');
+   }
+
+   /**
+    * This will loop over the available redirects and attempt to redirect if
+    * a match exists.
+    *
+    * @return void
+    */
+   public function redirect()
+   {
+      $this->redirect->redirect();
+   }
 }

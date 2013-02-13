@@ -28,49 +28,49 @@ require_once 'Revision.php';
  */
 abstract class Controller
 {
-    /**
-     * The Page instance
-     *
-     * @var Page
-     */
-    protected $page = null;
+   /**
+    * The Page instance
+    *
+    * @var Page
+    */
+   protected $page = null;
 
-    /**
-     * The class constructor
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->setupPage();
-    }
+   /**
+    * The class constructor
+    *
+    * @return void
+    */
+   public function __construct()
+   {
+      $this->setupPage();
+   }
 
-    /**
-     * This function instantiates the Page objects and then configures it based
-     * on the current environment.
-     *
-     * @return void
-     */
-    protected function setupPage()
-    {
-        $this->page = new Page();
+   /**
+    * This function instantiates the Page objects and then configures it based
+    * on the current environment.
+    *
+    * @return void
+    */
+   protected function setupPage()
+   {
+      $this->page = new Page();
 
-        // Setup revision
-        Revision::setMappings(array(
-            '/css/global.css' => '/css/global.1.css'
-        ));
+      // Setup revision
+      Revision::setMappings(array(
+         '/css/global.css' => '/css/global.1.css'
+      ));
 
-        // If local machine or development machine output debugging information
-        if ((defined('IS_LOCAL')) && (defined('IS_DEVELOPMENT')))
-        {
-            if ((IS_LOCAL) || (IS_DEVELOPMENT))
-            {
-                $this->page->showQueryLogTable(true);
-                $this->page->showViewDataTable(true);
-                $this->page->setDisplayArray($_GET, '$_GET');
-                $this->page->setDisplayArray($_POST, '$_POST');
-                $this->page->setDisplayArray($_SERVER, '$_SERVER');
-            }
-        }
-    }
+      // If local machine or development machine output debugging information
+      if ((defined('IS_LOCAL')) && (defined('IS_DEVELOPMENT')))
+      {
+         if ((IS_LOCAL) || (IS_DEVELOPMENT))
+         {
+            $this->page->showQueryLogTable(true);
+            $this->page->showViewDataTable(true);
+            $this->page->setDisplayArray($_GET, '$_GET');
+            $this->page->setDisplayArray($_POST, '$_POST');
+            $this->page->setDisplayArray($_SERVER, '$_SERVER');
+         }
+      }
+   }
 }

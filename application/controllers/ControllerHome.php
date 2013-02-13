@@ -26,15 +26,15 @@ require_once 'lib/DiamondForrest/Controller.php';
  */
 class ControllerHome extends Controller
 {
-    /**
-     * This will show the home page
-     *
-     * @return void
-     */
-    public function show()
-    {
-        $this->page->setTitle('DiamondForrest');
-        $this->page->setCssUrls(Revision::getUrl('/css/global.css'));
-        $this->page->printPage();
-    }
+   /**
+    * This will show the home page
+    *
+    * @return void
+    */
+   public function show()
+   {
+      $this->page->setTitle('DiamondForrest');
+      $this->page->setCssUrls(Revision::getUrl('/css/global.css'));
+      $this->page->printPage();
+   }
 }
