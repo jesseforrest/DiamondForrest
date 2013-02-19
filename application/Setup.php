@@ -131,11 +131,10 @@ class Setup
 // Setup the include path
 Setup::setupIncludePath();
 
-// Include Url class
+// Include necessary classes
 require_once 'lib/DiamondForrest/Url.php';
-
-// Include Request class
 require_once 'lib/DiamondForrest/Request.php';
+require_once 'lib/DiamondForrest/Revision.php';
 
 // Include necessary config file or exit if invalid host name was passed in
 $environment = Setup::getEnvironment();
@@ -160,6 +159,11 @@ switch ($environment)
 
 // Setup environment related settings
 Setup::setupEnvironmentSettings();
+
+// Setup revisions
+Revision::setMappings(array(
+   '/css/global.css' => '/css/global.1.css'
+));
 
 // Attempt to connect the base Model class to the database
 require_once 'lib/DiamondForrest/Model.php';

@@ -13,7 +13,6 @@
  */
 
 require_once 'Page.php';
-require_once 'Revision.php';
 
 /**
  * This class is the base class for all controllers. It contains common
@@ -54,11 +53,6 @@ abstract class Controller
    protected function setupPage()
    {
       $this->page = new Page();
-
-      // Setup revision
-      Revision::setMappings(array(
-         '/css/global.css' => '/css/global.1.css'
-      ));
 
       // If local machine or development machine output debugging information
       if ((defined('IS_LOCAL')) && (defined('IS_DEVELOPMENT')))
