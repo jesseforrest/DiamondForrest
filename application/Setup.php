@@ -134,6 +134,9 @@ Setup::setupIncludePath();
 // Include Url class
 require_once 'lib/DiamondForrest/Url.php';
 
+// Include Request class
+require_once 'lib/DiamondForrest/Request.php';
+
 // Include necessary config file or exit if invalid host name was passed in
 $environment = Setup::getEnvironment();
 switch ($environment)
