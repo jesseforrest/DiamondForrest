@@ -60,6 +60,35 @@ class Request
    }
    
    /**
+    * Returns the detailed city information based on an IP address. You must
+    * have GeoIP installed on the server in order to utilize this function 
+    * along with the GeoIPCity.dat file installed on the server.
+    * 
+    * For more information, go to:
+    * http://www.maxmind.com/en/geolocation_landing
+    *
+    * @param string $ipAddress An optional IP address to be passed in. If no
+    * IP address is passed in, it will determine the current user's IP address.
+    *
+    * @return array|null Returns an associative array of information about the
+    * the city on success or <var>null</var> otherwise.
+    */
+   static public function city($ipAddress = null)
+   {
+      if ($ipAddress === null)
+      {
+         $ipAddress = self::ip();
+      }
+   
+      $cityRecord = @geoip_record_by_name($ipAddress);
+      if (!$cityRecord)
+      {
+         return null;
+      }
+      return $cityRecord;
+   }
+   
+   /**
     * Returns the 2 digit character country code for an IP address. You must
     * have GeoIP installed on the server in order to utilize this function.
     * For more information, go to:
