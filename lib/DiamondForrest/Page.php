@@ -878,18 +878,18 @@ class Page
      $count = 1;
      foreach ($array as $key => $value)
      {
-       echo ''
-               . '<tr style="'
-                  . 'background-color:#ffffff;'
-                  . 'border:1px solid #ccc;'
-               . '">'
-            . '<td>'. ($count++) .'</td>'
-            . '<td>' . $key . '</td>'
+         echo '<tr style="'
+               . 'background-color:#ffffff;'
+               . 'border:1px solid #ccc;'
+            . '">'
+               . '<td style="vertical-align:top;">'. ($count++) .'</td>'
+               . '<td style="vertical-align:top;">' . $key . '</td>'
                . '<td>';
          
          if ((is_array($value)) || (is_object($value)))
          {
-            echo nl2br(htmlentities(print_r($value, true)));
+            echo nl2br(str_replace(' ', '&nbsp;', 
+               htmlentities(print_r($value, true))));
          }
          else if (is_bool($value))
          {
