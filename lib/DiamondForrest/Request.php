@@ -60,12 +60,43 @@ class Request
    }
    
    /**
-    * Returns the 3 digit character country code for an ip address.
+    * Returns the 2 digit character country code for an IP address. You must
+    * have GeoIP installed on the server in order to utilize this function.
+    * For more information, go to:
+    * http://www.maxmind.com/en/geolocation_landing
     *
     * @param string $ipAddress An optional IP address to be passed in. If no
     * IP address is passed in, it will determine the current user's IP address.
     *
-    * @return string The 3 digit character country code
+    * @return string|null The 2 digit character country code if it can be
+    * determined or <var>null</var> otherwise.
+    */
+   static public function country2($ipAddress = null)
+   {
+      if ($ipAddress === null)
+      {
+         $ipAddress = self::ip();
+      }
+   
+      $countryCode = @geoip_country_code_by_name($ipAddress);
+      if (!$countryCode)
+      {
+         return null;
+      }
+      return $countryCode;
+   }
+   
+   /**
+    * Returns the 3 digit character country code for an IP address. You must
+    * have GeoIP installed on the server in order to utilize this function.
+    * For more information, go to:
+    * http://www.maxmind.com/en/geolocation_landing
+    *
+    * @param string $ipAddress An optional IP address to be passed in. If no
+    * IP address is passed in, it will determine the current user's IP address.
+    *
+    * @return string|null The 3 digit character country code if it can be
+    * determined or <var>null</var> otherwise.
     */
    static public function country3($ipAddress = null)
    {
@@ -74,9 +105,14 @@ class Request
          $ipAddress = self::ip();
       }
    
-      return geoip_country_code3_by_name($ipAddress);
+      $countryCode = @geoip_country_code3_by_name($ipAddress);
+      if (!$countryCode)
+      {
+         return null;
+      }
+      return $countryCode;
    }
-
+   
    /**
     * Returns the value for a single key in the $_POST array
     *
