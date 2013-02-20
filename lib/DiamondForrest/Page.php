@@ -887,7 +887,7 @@ class Page
             . '<td>' . $key . '</td>'
                . '<td>';
          
-         if (is_array($value))
+         if ((is_array($value)) || (is_object($value)))
          {
             echo nl2br(htmlentities(print_r($value, true)));
          }
