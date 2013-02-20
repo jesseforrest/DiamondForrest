@@ -885,10 +885,30 @@ class Page
                . '">'
             . '<td>'. ($count++) .'</td>'
             . '<td>' . $key . '</td>'
-            . '<td>' 
-              . (is_array($value) 
-                ? nl2br(htmlentities(print_r($value, true)))
-                : htmlentities($value))
+               . '<td>';
+         
+         if (is_array($value))
+         {
+            echo nl2br(htmlentities(print_r($value, true)));
+         }
+         else if (is_bool($value))
+         {
+            echo '<span style="font-style:italic;">'
+               . (($value) ? 'true' : 'false')
+               . '</span>';
+         }
+         else if (is_null($value))
+         {
+            echo '<span style="font-style:italic;">'
+               . 'null'
+               . '</span>';            
+         }
+         else 
+         {
+            echo htmlentities($value);
+         }
+
+         echo ''
             . '</td>'
          . '</tr>';
      }
