@@ -258,6 +258,92 @@ class Database
          $time);
       return $r;
    }
+   
+   /**
+    * This function will attempt to insert records into the database table
+    * based on the <var>$tableName</var> and <var>$keyValuePairs</var> array.
+    *
+    * @param string $tableName     The name of the table
+    * @param array  $keyValuePairs A hash array of key/value pairs to be
+    *                              inserted into the table. The key is the
+    *                              column name and the value is the actual
+    *                              value. If you have a database column called
+    *                              'created', this function will automatically
+    *                              set it's value to be the MySQL expression
+    *                              <var>NOW()</var>.
+    *
+    * @return boolean Returns true on success or false otherwise.
+    */
+   public function insert($tableName, $keyValuePairs)
+   {
+      $columns = $this->getTableColumns($tableName);
+      if (!$columns)
+      {
+         return false;
+      }
+   
+      $keys = '';
+      $values = '';
+      foreach ($columns as $column)
+      {
+         if (!isset($keyValuePairs[$column]))
+         {
+            if ($column != 'created')
+            {
+               continue;
+            }
+         }
+   
+         if ($keys != '')
+         {
+            $keys .= ', ';
+            $values .= ', ';
+         }
+   
+         $keys .= $column;
+   
+         if ($column == 'created')
+         {
+            $values .= 'NOW()';
+         }
+         else
+         {
+            $values .= '"' . $this->escape($keyValuePairs[$column]) . '"';
+         }
+      }
+   
+      $q = 'INSERT INTO ' . $tableName . ' (' . $keys . ') '
+         . 'VALUES (' . $values . ')';
+      return $this->query($q);
+   }
+   
+   /**
+    * Returns an array of column names for the specified table
+    *
+    * @param string $tableName The name of the table
+    *
+    * @return array|null Returns an array on success or null if no table
+    * found.
+    */
+   public function getTableColumns($tableName)
+   {
+      $q = 'SELECT `COLUMN_NAME` AS `column_name` '
+         . 'FROM `INFORMATION_SCHEMA`.`COLUMNS` '
+         . 'WHERE `TABLE_NAME` = "' . $this->escape($tableName) . '"';
+   
+      $r = $this->query($q);
+      if ((!$r) || ($this->getNumberOfRecords($r) == 0))
+      {
+         return null;
+      }
+   
+      $columns = array();
+      while ($column = $this->getNextRecord($r))
+      {
+         $columns[] = $column['column_name'];
+      }
+      return $columns;
+   }
     
    /**
     * Insert a record to the query log.  This will only add up to

@@ -88,4 +88,24 @@ abstract class Model
       $name = strtolower(preg_replace('/([a-z])([A-Z])/', '$1_$2', $name));
       return $name;
    }
+   
+   
+   /**
+    * This will attempt to insert a record into the table returned via the
+    * <code>getTableName()</code> function.  It will attempt to insert
+    *
+    * @param array $keyValuePairs A hash array of key/value pairs to be
+    *                             inserted into the table. The key is the
+    *                             column name and the value is the actual
+    *                             value. If you have a database column called
+    *                             'created', this function will automatically
+    *                             set it's value to be the MySQL expression
+    *                             <var>NOW()</var>.
+    *
+    * @return boolean
+    */
+   static public function insert($keyValuePairs)
+   {
+      return self::$database->insert(self::getTableName(), $keyValuePairs);
+   }
 }
