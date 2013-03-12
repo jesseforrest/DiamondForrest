@@ -67,7 +67,7 @@ abstract class Model
    }
 
    /**
-    * Returns the name of the database table based on the model.
+    * Returns the name of the database table based on the model. 
     *
     * @return string
     */
@@ -89,23 +89,75 @@ abstract class Model
       return $name;
    }
    
+   /**
+    * This will attempt to select record(s) from the table returned via the
+    * <code>getTableName()</code> function.
+    *
+    * @param array $whereHash A hash array of key/value pairs to
+    *                         be used in the where clause part of the select.
+    *                         The key is the column name and the value is the
+    *                         actual value to match against. Each item in the
+    *                         array will be added to a MySQL "AND" clause. If
+    *                         you need to use an "OR" clause or more complex
+    *                         expression, you will need to write your own
+    *                         query.
+    *
+    * @return array|null If one item is selected it will return an associative 
+    * array of the key/value pairs.  If multiple items are selected it will
+    * return an array of arrays. If no items were found it will return 
+    * <var>null</var>.
+    */
+   static public function select($whereHash)
+   {
+      return self::$database->select(self::getTableName(), $whereHash);
+   }
    
    /**
     * This will attempt to insert a record into the table returned via the
-    * <code>getTableName()</code> function.  It will attempt to insert
-    *
-    * @param array $keyValuePairs A hash array of key/value pairs to be
-    *                             inserted into the table. The key is the
-    *                             column name and the value is the actual
-    *                             value. If you have a database column called
-    *                             'created', this function will automatically
-    *                             set it's value to be the MySQL expression
-    *                             <var>NOW()</var>.
-    *
-    * @return boolean
+    * <code>getTableName()</code> function.   
+    * 
+    * @param array $insertHash A hash array of key/value pairs to be
+    *                          inserted into the table. The key is the
+    *                          column name and the value is the actual
+    *                          value. If you have a database column called
+    *                          'created', 'updated', or 'modified' this 
+    *                          function will automatically set it's value to 
+    *                          be the MySQL expression <var>NOW()</var>.
+    * 
+    * @return boolean Whether or not the insert was successful.
     */
-   static public function insert($keyValuePairs)
+   static public function insert($insertHash)
    {
-      return self::$database->insert(self::getTableName(), $keyValuePairs);
+      return self::$database->insert(self::getTableName(), $insertHash);
+   }
+   
+   /**
+    * This will attempt to update a record into the table returned via the
+    * <code>getTableName()</code> function. 
+    *
+    * @param array $updateHash A hash array of key/value pairs to 
+    *                          update the table with. The key is the
+    *                          column name and the value is the actual
+    *                          value. If you have a database column called
+    *                          'updated' or 'modified', this function will 
+    *                          automatically set it's value to be the MySQL 
+    *                          expression <var>NOW()</var>.
+    * @param array $whereHash  A hash array of key/value pairs to 
+    *                          be used in the where clause part of the update. 
+    *                          The key is the column name and the value is the 
+    *                          actual value to match against. Each item in the
+    *                          array will be added to a MySQL "AND" clause. If
+    *                          you need to use an "OR" clause or more complex
+    *                          expression, you will need to write your own 
+    *                          query.
+    *                          
+    * @return boolean Whether or not the update was successful.
+    */
+   static public function update($updateHash, $whereHash)
+   {
+      return self::$database->update(
+         self::getTableName(), 
+         $updateHash,
+         $whereHash);
    }
 }

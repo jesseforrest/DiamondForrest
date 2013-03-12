@@ -6,10 +6,10 @@
  *
  * @category  PHP
  * @package   DiamondForrest
- * @author    Jesse Forrest <jesseforrest@gmail.com>
+ * @author   Jesse Forrest <jesseforrest@gmail.com>
  * @copyright 2012 DiamondForrest
  * @license   https://github.com/jesseforrest/DiamondForrest License 1.0
- * @link      https://github.com/jesseforrest/DiamondForrest/wiki
+ * @link     https://github.com/jesseforrest/DiamondForrest/wiki
  */
 
 /**
@@ -18,16 +18,16 @@
  *
  * @category  PHP
  * @package   DiamondForrest
- * @author    Jesse Forrest <jesseforrest@gmail.com>
+ * @author   Jesse Forrest <jesseforrest@gmail.com>
  * @copyright 2012 DiamondForrest
  * @license   https://github.com/jesseforrest/DiamondForrest License 1.0
- * @link      https://github.com/jesseforrest/DiamondForrest/wiki
+ * @link     https://github.com/jesseforrest/DiamondForrest/wiki
  */
 class Database
 {
    /**
     * The maximum number of records to store in the $queryLog member variable
-    *
+    * 
     * @var integer
     */
    const QUERY_LOG_MAX_SIZE = 200;
@@ -35,7 +35,7 @@ class Database
    /**
     * The <code>getNextRecord</code> function uses this to output an
     * associative array.
-    *
+    * 
     * @var integer
     */
    const FETCH_ASSOC = 1;
@@ -43,7 +43,7 @@ class Database
    /**
     * The <code>getNextRecord</code> function uses this to output a
     * numerical array.
-    *
+    * 
     * @var integer
     */
    const FETCH_NUM = 2;
@@ -51,14 +51,14 @@ class Database
    /**
     * The <code>getNextRecord</code> function uses this to output both an
     * associative array and a numerical array.
-    *
+    * 
     * @var integer
     */
    const FETCH_BOTH = 3;
 
    /**
     * The MySQL database connection
-    *
+    * 
     * @var object
     */
    protected $connection;
@@ -73,46 +73,46 @@ class Database
     * The log of query calls in the format:
     * <code>
     * $this->queryLog[x] = array(
-    *    'query' => 'SELECT * FROM table_name',
-    *    'is_error' => false,
-    *    'error_number' => 0,
-    *    'error_message' => '',
-    *    'affected' => 0, // number of rows affected or returned
-    *    'time' => '20.0',
+    *   'query' => 'SELECT * FROM table_name',
+    *   'is_error' => false,
+    *   'error_number' => 0,
+    *   'error_message' => '',
+    *   'affected' => 0, // number of rows affected or returned
+    *   'time' => '20.0',
     * );
     * </code>
-    *
+    * 
     * @var array
     */
    protected static $queryLog = array();
     
    /**
     * The class constructor creates a Database object
-    *
+    * 
     * @param string  $server   The hostname of the server
-    * @param string  $user     The username credentials
-    * @param string  $pass     The password credentials
+    * @param string  $user    The username credentials
+    * @param string  $pass    The password credentials
     * @param string  $database The name of the database to connect to
-    * @param integer $port     The port the database should connect to
-    * @param boolean $log      Whether or not to log queries
-    *
+    * @param integer $port    The port the database should connect to
+    * @param boolean $log     Whether or not to log queries
+    * 
     * @return void
     */
-   public function __construct($server, $user, $pass, $database, $port = 3306,
-         $log = true)
+   public function __construct($server, $user, $pass, $database, $port = 3306, 
+      $log = true)
    {
       // Set whether or not to log queries
       $this->logQueries = $log;
 
       // Make connection to database
       $this->connection = mysqli_connect(
-         $server,
-         $user,
-         $pass,
-         $database,
+         $server, 
+         $user, 
+         $pass, 
+         $database, 
          $port);
-
-      if (!$this->connection)
+      
+      if (!$this->connection) 
       {
          throw new Exception('Unable to connect to MySQL server');
       }
@@ -120,22 +120,22 @@ class Database
     
    /**
     * Returns the next record in the recordset
-    *
+    * 
     * @param array  &$recordset The MySQL recordset
-    * @param string $resultType The type of array that is to be fetched.
-    *                           This can be <var>self::FETCH_BOTH</var>,
-    *                           <var>self::FETCH_ASSOC</var>,
-    *                           <var>self::FETCH_NUM</var>
-    *
+    * @param string $resultType The type of array that is to be fetched. 
+    *                     This can be <var>self::FETCH_BOTH</var>, 
+    *                     <var>self::FETCH_ASSOC</var>, 
+    *                     <var>self::FETCH_NUM</var>
+    * 
     * @return array|false
     */
    public function getNextRecord(&$recordset, $resultType = self::FETCH_BOTH)
    {
-      if (!$recordset)
+      if (!$recordset) 
       {
          return false;
       }
-      switch ($resultType)
+      switch ($resultType) 
       {
          case self::FETCH_BOTH:
             return mysqli_fetch_array($recordset);
@@ -149,9 +149,9 @@ class Database
     
    /**
     * Returns the number of records in the recordset
-    *
+    * 
     * @param array $recordset The MySQL recordset
-    *
+    * 
     * @return integer
     */
    public function getNumberOfRecords($recordset)
@@ -162,31 +162,31 @@ class Database
    /**
     * Returns a string with backslashes before characters that need to be
     * quoted in database queries.
-    *
+    * 
     * @param string $str The part of the query string
-    *
+    * 
     * @return string
     */
    public function escape($str)
    {
       return mysqli_real_escape_string($this->connection, $str);
    }
-
+   
    /**
     * Returns the id generated from the previous insert statement
-    *
+    * 
     * @return integer
     */
    public function getLastInsertId()
    {
       return mysqli_insert_id($this->connection);
    }
-
+   
    /**
     * Takes a MySQL result array and returns it in a PHP aray
-    *
+    * 
     * @param object $recordset The MySQL result array
-    *
+    * 
     * @return array
     */
    public function getArray($recordset)
@@ -205,17 +205,17 @@ class Database
     *
     * If an invalid index is passed in, this function will return
     * <var>false</var>.
-    *
-    * @param integer $index      The index to reset the pointer to
+    * 
+    * @param integer $index     The index to reset the pointer to
     * @param array   &$recordset The recordset
     *
     * @return boolean Returns true on success or false otherwise.
     */
    public function setRecordPointer($index, &$recordset)
    {
-      if ($recordset != null)
+      if ($recordset != null) 
       {
-         if ($index > ($this->getNumberOfRecords($recordset) - 1))
+         if ($index > ($this->getNumberOfRecords($recordset) - 1)) 
          {
             return false;
          }
@@ -225,11 +225,11 @@ class Database
    }
     
    /**
-    * Performs the given query on the database and returns the result, which
+    * Performs the given query on the database and returns the result, which 
     * may be false, true or a resource identifier.
-    *
+    * 
     * @param string $query The SQL query to run
-    *
+    * 
     * @return mixed
     */
    public function query($query)
@@ -260,21 +260,86 @@ class Database
    }
    
    /**
-    * This function will attempt to insert records into the database table
-    * based on the <var>$tableName</var> and <var>$keyValuePairs</var> array.
+    * This function will attempt to select records from the database table
+    * based on the <var>$tableName</var> and <var>$whereHash</var> array.
     *
-    * @param string $tableName     The name of the table
-    * @param array  $keyValuePairs A hash array of key/value pairs to be
-    *                              inserted into the table. The key is the
-    *                              column name and the value is the actual
-    *                              value. If you have a database column called
-    *                              'created', this function will automatically
-    *                              set it's value to be the MySQL expression
-    *                              <var>NOW()</var>.
+    * @param string $tableName  The name of the table
+    * @param array  $whereHash  A hash array of key/value pairs to
+    *                           be used in the where clause part of the update.
+    *                           The key is the column name and the value is the
+    *                           actual value to match against. Each item in the
+    *                           array will be added to a MySQL "AND" clause. If
+    *                           you need to use an "OR" clause or more complex
+    *                           expression, you will need to write your own
+    *                           query.
+    *
+    * @return array|null If one item is selected it will return an associative 
+    * array of the key/value pairs.  If multiple items are selected it will
+    * return an array of arrays. If no items were found it will return 
+    * <var>null</var>.
+    */
+   public function select($tableName, $whereHash)
+   {   
+      // Build where clause
+      $whereClause = '';
+      foreach ($whereHash as $column => $value)
+      {
+         if ($whereClause != '')
+         {
+            $whereClause .= ' AND ';
+         }
+         $whereClause .= $column . ' = "' . $this->escape($value) . '"';
+      }
+   
+      $q = 'SELECT * '
+         . 'FROM ' . $tableName . ' '
+         . 'WHERE ' . $whereClause;
+      $r = $this->query($q);
+      
+      // If invalid query
+      if (!$r) 
+      {
+         return null;
+      }
+      
+      // If no records
+      $numRecords = $this->getNumberOfRecords($r);
+      if ($numRecords == 0)
+      {
+         return null;
+      }
+      
+      // If one record
+      if ($numRecords == 1)
+      {
+         return $this->getNextRecord($r, self::FETCH_ASSOC);
+      }
+      
+      // If multiple records
+      $resultArray = array();
+      while ($row = $this->getNextRecord($r, self::FETCH_ASSOC))
+      {
+         $resultArray[] = $row;
+      }
+      return $resultArray;
+   }
+    
+   /**
+    * This function will attempt to insert records into the database table
+    * based on the <var>$tableName</var> and <var>$insertHash</var> array.
+    *
+    * @param string $tableName  The name of the table
+    * @param array  $insertHash A hash array of key/value pairs to be
+    *                     inserted into the table. The key is the
+    *                     column name and the value is the actual
+    *                     value. If you have a database column called
+    *                     'created', 'updated', or 'modified' this function 
+    *                     will automatically set it's value to be the MySQL 
+    *                     expression <var>NOW()</var>.
     *
     * @return boolean Returns true on success or false otherwise.
     */
-   public function insert($tableName, $keyValuePairs)
+   public function insert($tableName, $insertHash)
    {
       $columns = $this->getTableColumns($tableName);
       if (!$columns)
@@ -286,9 +351,11 @@ class Database
       $values = '';
       foreach ($columns as $column)
       {
-         if (!isset($keyValuePairs[$column]))
+         if (!isset($insertHash[$column]))
          {
-            if ($column != 'created')
+            if (($column != 'created') 
+               && ($column != 'modified') 
+               && ($column != 'updated'))
             {
                continue;
             }
@@ -302,13 +369,15 @@ class Database
    
          $keys .= $column;
    
-         if ($column == 'created')
+         if (($column == 'created') 
+            || ($column == 'modified') 
+            || ($column == 'updated'))
          {
             $values .= 'NOW()';
          }
          else
          {
-            $values .= '"' . $this->escape($keyValuePairs[$column]) . '"';
+            $values .= '"' . $this->escape($insertHash[$column]) . '"';
          }
       }
    
@@ -317,6 +386,85 @@ class Database
       return $this->query($q);
    }
    
+   
+   /**
+    * This function will attempt to update records into the database table
+    * based on the <var>$tableName</var> and <var>$updateHash</var> array and
+    * <var>$whereHash</var> array.
+    *
+    * @param string $tableName  The name of the table
+    * @param array  $updateHash A hash array of key/value pairs to
+    *                           update the table with. The key is the
+    *                           column name and the value is the actual
+    *                           value. If you have a database column called
+    *                           'updated' or 'modified', this function will
+    *                           automatically set it's value to be the MySQL
+    *                           expression <var>NOW()</var>.
+    * @param array  $whereHash  A hash array of key/value pairs to
+    *                           be used in the where clause part of the update.
+    *                           The key is the column name and the value is the
+    *                           actual value to match against. Each item in the
+    *                           array will be added to a MySQL "AND" clause. If
+    *                           you need to use an "OR" clause or more complex
+    *                           expression, you will need to write your own
+    *                           query.
+    *
+    *
+    * @return boolean Returns true on success or false otherwise.
+    */
+   public function update($tableName, $updateHash, $whereHash)
+   {
+      $columns = $this->getTableColumns($tableName);
+      if (!$columns)
+      {
+         return false;
+      }
+       
+      // Build set clause
+      $setClause = '';
+      foreach ($columns as $column)
+      {
+         if (!isset($updateHash[$column]))
+         {
+            if (($column != 'modified') && ($column != 'updated'))
+            {
+               continue;
+            }
+         }
+         
+         if ($setClause != '')
+         {
+            $setClause .= ', ';
+         }
+          
+         if (($column == 'modified') || ($column == 'updated'))
+         {
+            $setClause .= $column . ' = NOW()';
+         }
+         else
+         {
+            $setClause .= $column . ' = '
+               . '"' . $this->escape($updateHash[$column]) . '"';
+         }
+      }
+      
+      // Build where clause
+      $whereClause = '';
+      foreach ($whereHash as $column => $value)
+      {
+         if ($whereClause != '')
+         {
+            $whereClause .= ' AND ';
+         }
+         $whereClause .= $column . ' = "' . $this->escape($value) . '"';
+      }
+      
+      $q = 'UPDATE ' . $tableName . ' '
+         . 'SET ' . $setClause . ' '
+         . 'WHERE ' . $whereClause;
+      return $this->query($q);
+   }
+    
    /**
     * Returns an array of column names for the specified table
     *
@@ -328,15 +476,15 @@ class Database
    public function getTableColumns($tableName)
    {
       $q = 'SELECT `COLUMN_NAME` AS `column_name` '
-         . 'FROM `INFORMATION_SCHEMA`.`COLUMNS` '
-         . 'WHERE `TABLE_NAME` = "' . $this->escape($tableName) . '"';
-   
+      . 'FROM `INFORMATION_SCHEMA`.`COLUMNS` '
+      . 'WHERE `TABLE_NAME` = "' . $this->escape($tableName) . '"';
+
       $r = $this->query($q);
       if ((!$r) || ($this->getNumberOfRecords($r) == 0))
       {
          return null;
       }
-   
+
       $columns = array();
       while ($column = $this->getNextRecord($r))
       {
@@ -344,20 +492,20 @@ class Database
       }
       return $columns;
    }
-    
+
    /**
     * Insert a record to the query log.  This will only add up to
     * <var>QUERY_LOG_MAX_SIZE</var> records and then no longer add to the
     * <var>$queryLog</var> member variable
     *
-    * @param string  $query        The query ran
-    * @param boolean $isError      If there was an error
+    * @param string  $query      The query ran
+    * @param boolean $isError     If there was an error
     * @param integer $errorNumber  If an error it contains the MySQL error
-    *                              number.
+    *                       number.
     * @param string  $errorMessage If an error it contains the MySQL error
-    *                              message.
-    * @param integer $affected     The number of rows affected
-    * @param string  $time         The time it took to run the query.
+    *                       message.
+    * @param integer $affected    The number of rows affected
+    * @param string  $time       The time it took to run the query.
     *
     * @return void
     */
@@ -367,16 +515,16 @@ class Database
       if (count(self::$queryLog) < self::QUERY_LOG_MAX_SIZE)
       {
          self::$queryLog[] =  array(
-            'query' => $query,
-            'is_error' => $isError,
-            'error_number' => $errorNumber,
-            'error_message' => $errorMessage,
-            'affected' => $affected,
-            'time' => $time
+               'query' => $query,
+               'is_error' => $isError,
+               'error_number' => $errorNumber,
+               'error_message' => $errorMessage,
+               'affected' => $affected,
+               'time' => $time
          );
       }
    }
-    
+
    /**
     * Returns the query log
     *
