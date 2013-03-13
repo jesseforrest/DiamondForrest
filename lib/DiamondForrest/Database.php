@@ -6,10 +6,10 @@
  *
  * @category  PHP
  * @package   DiamondForrest
- * @author   Jesse Forrest <jesseforrest@gmail.com>
+ * @author    Jesse Forrest <jesseforrest@gmail.com>
  * @copyright 2012 DiamondForrest
  * @license   https://github.com/jesseforrest/DiamondForrest License 1.0
- * @link     https://github.com/jesseforrest/DiamondForrest/wiki
+ * @link      https://github.com/jesseforrest/DiamondForrest/wiki
  */
 
 /**
@@ -18,10 +18,10 @@
  *
  * @category  PHP
  * @package   DiamondForrest
- * @author   Jesse Forrest <jesseforrest@gmail.com>
+ * @author    Jesse Forrest <jesseforrest@gmail.com>
  * @copyright 2012 DiamondForrest
  * @license   https://github.com/jesseforrest/DiamondForrest License 1.0
- * @link     https://github.com/jesseforrest/DiamondForrest/wiki
+ * @link      https://github.com/jesseforrest/DiamondForrest/wiki
  */
 class Database
 {
@@ -90,11 +90,11 @@ class Database
     * The class constructor creates a Database object
     * 
     * @param string  $server   The hostname of the server
-    * @param string  $user    The username credentials
-    * @param string  $pass    The password credentials
+    * @param string  $user     The username credentials
+    * @param string  $pass     The password credentials
     * @param string  $database The name of the database to connect to
-    * @param integer $port    The port the database should connect to
-    * @param boolean $log     Whether or not to log queries
+    * @param integer $port     The port the database should connect to
+    * @param boolean $log      Whether or not to log queries
     * 
     * @return void
     */
@@ -123,9 +123,9 @@ class Database
     * 
     * @param array  &$recordset The MySQL recordset
     * @param string $resultType The type of array that is to be fetched. 
-    *                     This can be <var>self::FETCH_BOTH</var>, 
-    *                     <var>self::FETCH_ASSOC</var>, 
-    *                     <var>self::FETCH_NUM</var>
+    *                           This can be <var>self::FETCH_BOTH</var>, 
+    *                           <var>self::FETCH_ASSOC</var>, 
+    *                           <var>self::FETCH_NUM</var>
     * 
     * @return array|false
     */
@@ -206,7 +206,7 @@ class Database
     * If an invalid index is passed in, this function will return
     * <var>false</var>.
     * 
-    * @param integer $index     The index to reset the pointer to
+    * @param integer $index      The index to reset the pointer to
     * @param array   &$recordset The recordset
     *
     * @return boolean Returns true on success or false otherwise.
@@ -330,13 +330,13 @@ class Database
     *
     * @param string $tableName  The name of the table
     * @param array  $insertHash A hash array of key/value pairs to be
-    *                     inserted into the table. The key is the
-    *                     column name and the value is the actual
-    *                     value. If you have a database column called
-    *                     'created', 'updated', or 'modified' this function 
-    *                     will automatically set it's value to be the MySQL 
-    *                     expression <var>NOW()</var>.
-    *
+    *                           inserted into the table. The key is the
+    *                           column name and the value is the actual
+    *                           value. If you have a database column called
+    *                           'created', 'updated', or 'modified' this 
+    *                           function will automatically set it's value to 
+    *                           be the MySQL expression <var>NOW()</var>.
+    *  
     * @return boolean Returns true on success or false otherwise.
     */
    public function insert($tableName, $insertHash)
@@ -498,14 +498,14 @@ class Database
     * <var>QUERY_LOG_MAX_SIZE</var> records and then no longer add to the
     * <var>$queryLog</var> member variable
     *
-    * @param string  $query      The query ran
-    * @param boolean $isError     If there was an error
+    * @param string  $query        The query ran
+    * @param boolean $isError      If there was an error
     * @param integer $errorNumber  If an error it contains the MySQL error
-    *                       number.
+    *                              number.
     * @param string  $errorMessage If an error it contains the MySQL error
-    *                       message.
-    * @param integer $affected    The number of rows affected
-    * @param string  $time       The time it took to run the query.
+    *                              message.
+    * @param integer $affected     The number of rows affected
+    * @param string  $time         The time it took to run the query.
     *
     * @return void
     */
