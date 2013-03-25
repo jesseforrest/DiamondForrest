@@ -13,6 +13,7 @@
  */
 
 require_once 'Page.php';
+require_once 'Session.php';
 
 /**
  * This class is the base class for all controllers. It contains common
@@ -35,12 +36,20 @@ abstract class Controller
    protected $page = null;
 
    /**
+    * The Session instance
+    *
+    * @var Session
+    */
+   protected $session = null;
+
+   /**
     * The class constructor
     *
     * @return void
     */
    public function __construct()
    {
+      $this->session = Session::getInstance();
       $this->setupPage();
    }
 
