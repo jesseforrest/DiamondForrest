@@ -165,6 +165,10 @@ Revision::setMappings(array(
    '/css/global.css' => '/css/global.1.css'
 ));
 
+// Attempt to start the initial session
+require_once 'lib/DiamondForrest/Session.php';
+Session::getInstance();
+
 // Attempt to connect the base Model class to the database
 require_once 'lib/DiamondForrest/Model.php';
 Model::connect();
