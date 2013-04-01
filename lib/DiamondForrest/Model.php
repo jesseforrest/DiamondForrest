@@ -65,6 +65,17 @@ abstract class Model
          exit;
       }
    }
+   
+   /**
+    * Returns the Database instance
+    * 
+    * @return Database|null Returns the Database if their is an instance of it
+    * or <var>null</var> if their is not.
+    */
+   static public function getDatabase()
+   {
+      return self::$database;
+   }
 
    /**
     * Returns the name of the database table based on the model. 
@@ -93,21 +104,23 @@ abstract class Model
     * This will attempt to select record(s) from the table returned via the
     * <code>getTableName()</code> function.
     *
-    * @param array $whereHash A hash array of key/value pairs to
-    *                         be used in the where clause part of the select.
-    *                         The key is the column name and the value is the
-    *                         actual value to match against. Each item in the
-    *                         array will be added to a MySQL "AND" clause. If
-    *                         you need to use an "OR" clause or more complex
-    *                         expression, you will need to write your own
-    *                         query.
+    * @param array|null $whereHash A hash array of key/value pairs to
+    *                              be used in the where clause part of the 
+    *                              select. The key is the column name and the 
+    *                              value is the actual value to match against. 
+    *                              Each item in the array will be added to a 
+    *                              MySQL "AND" clause. If you need to use an 
+    *                              "OR" clause or more complex expression, you 
+    *                              will need to write your own query. This 
+    *                              parameter is optional if you want to select 
+    *                              all records.
     *
     * @return array|null If one item is selected it will return an associative 
     * array of the key/value pairs.  If multiple items are selected it will
     * return an array of arrays. If no items were found it will return 
     * <var>null</var>.
     */
-   static public function select($whereHash)
+   static public function select($whereHash = null)
    {
       return self::$database->select(self::getTableName(), $whereHash);
    }
@@ -135,25 +148,26 @@ abstract class Model
     * This will attempt to update a record into the table returned via the
     * <code>getTableName()</code> function. 
     *
-    * @param array $updateHash A hash array of key/value pairs to 
-    *                          update the table with. The key is the
-    *                          column name and the value is the actual
-    *                          value. If you have a database column called
-    *                          'updated' or 'modified', this function will 
-    *                          automatically set it's value to be the MySQL 
-    *                          expression <var>NOW()</var>.
-    * @param array $whereHash  A hash array of key/value pairs to 
-    *                          be used in the where clause part of the update. 
-    *                          The key is the column name and the value is the 
-    *                          actual value to match against. Each item in the
-    *                          array will be added to a MySQL "AND" clause. If
-    *                          you need to use an "OR" clause or more complex
-    *                          expression, you will need to write your own 
-    *                          query.
+    * @param array      $updateHash A hash array of key/value pairs to 
+    *                               update the table with. The key is the
+    *                               column name and the value is the actual
+    *                               value. If you have a database column called
+    *                               'updated' or 'modified', this function will 
+    *                               automatically set it's value to be the MySQL
+    *                               expression <var>NOW()</var>.
+    * @param array|null $whereHash  A hash array of key/value pairs to be used 
+    *                               in the where clause part of the update. 
+    *                               The key is the column name and the value is 
+    *                               the actual value to match against. Each item
+    *                               in the array will be added to a MySQL "AND" 
+    *                               clause. If you need to use an "OR" clause or
+    *                               more complex expression, you will need to 
+    *                               write your own query. This parameter is 
+    *                               optional if you want to update all records.
     *                          
     * @return boolean Whether or not the update was successful.
     */
-   static public function update($updateHash, $whereHash)
+   static public function update($updateHash, $whereHash = null)
    {
       return self::$database->update(
          self::getTableName(), 

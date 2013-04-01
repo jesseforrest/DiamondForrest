@@ -90,11 +90,11 @@ class Database
     * The class constructor creates a Database object
     * 
     * @param string  $server   The hostname of the server
-    * @param string  $user     The username credentials
-    * @param string  $pass     The password credentials
+    * @param string  $user    The username credentials
+    * @param string  $pass    The password credentials
     * @param string  $database The name of the database to connect to
-    * @param integer $port     The port the database should connect to
-    * @param boolean $log      Whether or not to log queries
+    * @param integer $port    The port the database should connect to
+    * @param boolean $log     Whether or not to log queries
     * 
     * @return void
     */
@@ -123,9 +123,9 @@ class Database
     * 
     * @param array  &$recordset The MySQL recordset
     * @param string $resultType The type of array that is to be fetched. 
-    *                           This can be <var>self::FETCH_BOTH</var>, 
-    *                           <var>self::FETCH_ASSOC</var>, 
-    *                           <var>self::FETCH_NUM</var>
+    *                     This can be <var>self::FETCH_BOTH</var>, 
+    *                     <var>self::FETCH_ASSOC</var>, 
+    *                     <var>self::FETCH_NUM</var>
     * 
     * @return array|false
     */
@@ -206,7 +206,7 @@ class Database
     * If an invalid index is passed in, this function will return
     * <var>false</var>.
     * 
-    * @param integer $index      The index to reset the pointer to
+    * @param integer $index     The index to reset the pointer to
     * @param array   &$recordset The recordset
     *
     * @return boolean Returns true on success or false otherwise.
@@ -263,37 +263,44 @@ class Database
     * This function will attempt to select records from the database table
     * based on the <var>$tableName</var> and <var>$whereHash</var> array.
     *
-    * @param string $tableName  The name of the table
-    * @param array  $whereHash  A hash array of key/value pairs to
-    *                           be used in the where clause part of the update.
-    *                           The key is the column name and the value is the
-    *                           actual value to match against. Each item in the
-    *                           array will be added to a MySQL "AND" clause. If
-    *                           you need to use an "OR" clause or more complex
-    *                           expression, you will need to write your own
-    *                           query.
+    * @param string     $tableName The name of the table
+    * @param array|null $whereHash A hash array of key/value pairs to
+    *                              be used in the where clause part of the 
+    *                              update. The key is the column name and the 
+    *                              value is theactual value to match against. 
+    *                              Each item in the array will be added to a 
+    *                              MySQL "AND" clause. If you need to use an 
+    *                              "OR" clause or more complex expression, you 
+    *                              will need to write your own query. This 
+    *                              parameter is optional if you want to select 
+    *                              all records.
     *
     * @return array|null If one item is selected it will return an associative 
     * array of the key/value pairs.  If multiple items are selected it will
     * return an array of arrays. If no items were found it will return 
     * <var>null</var>.
     */
-   public function select($tableName, $whereHash)
+   public function select($tableName, $whereHash = null)
    {   
       // Build where clause
       $whereClause = '';
-      foreach ($whereHash as $column => $value)
+      if (is_array($whereHash))
       {
-         if ($whereClause != '')
+         foreach ($whereHash as $column => $value)
          {
-            $whereClause .= ' AND ';
+            if ($whereClause != '')
+            {
+               $whereClause .= ' AND ';
+            }
+            $whereClause .= $column . ' = "' . $this->escape($value) . '"';
          }
-         $whereClause .= $column . ' = "' . $this->escape($value) . '"';
       }
    
       $q = 'SELECT * '
          . 'FROM ' . $tableName . ' '
-         . 'WHERE ' . $whereClause;
+         . (($whereClause != '')
+            ? 'WHERE ' . $whereClause
+            : '');
       $r = $this->query($q);
       
       // If invalid query
@@ -330,13 +337,13 @@ class Database
     *
     * @param string $tableName  The name of the table
     * @param array  $insertHash A hash array of key/value pairs to be
-    *                           inserted into the table. The key is the
-    *                           column name and the value is the actual
-    *                           value. If you have a database column called
-    *                           'created', 'updated', or 'modified' this 
-    *                           function will automatically set it's value to 
-    *                           be the MySQL expression <var>NOW()</var>.
-    *  
+    *                     inserted into the table. The key is the
+    *                     column name and the value is the actual
+    *                     value. If you have a database column called
+    *                     'created', 'updated', or 'modified' this function 
+    *                     will automatically set it's value to be the MySQL 
+    *                     expression <var>NOW()</var>.
+    *
     * @return boolean Returns true on success or false otherwise.
     */
    public function insert($tableName, $insertHash)
@@ -392,27 +399,28 @@ class Database
     * based on the <var>$tableName</var> and <var>$updateHash</var> array and
     * <var>$whereHash</var> array.
     *
-    * @param string $tableName  The name of the table
-    * @param array  $updateHash A hash array of key/value pairs to
-    *                           update the table with. The key is the
-    *                           column name and the value is the actual
-    *                           value. If you have a database column called
-    *                           'updated' or 'modified', this function will
-    *                           automatically set it's value to be the MySQL
-    *                           expression <var>NOW()</var>.
-    * @param array  $whereHash  A hash array of key/value pairs to
-    *                           be used in the where clause part of the update.
-    *                           The key is the column name and the value is the
-    *                           actual value to match against. Each item in the
-    *                           array will be added to a MySQL "AND" clause. If
-    *                           you need to use an "OR" clause or more complex
-    *                           expression, you will need to write your own
-    *                           query.
-    *
+    * @param string     $tableName  The name of the table
+    * @param array      $updateHash A hash array of key/value pairs to
+    *                               update the table with. The key is the
+    *                               column name and the value is the actual
+    *                               value. If you have a database column called
+    *                               'updated' or 'modified', this function will
+    *                               automatically set it's value to be the MySQL
+    *                               expression <var>NOW()</var>.
+    * @param array|null $whereHash  A hash array of key/value pairs to
+    *                               be used in the where clause part of the 
+    *                               update. The key is the column name and the 
+    *                               value is the actual value to match 
+    *                               against. Each item in the array will be 
+    *                               added to a MySQL "AND" clause. If you need 
+    *                               to use an "OR" clause or more complex
+    *                               expression, you will need to write your own
+    *                               query. This parameter is optional if you 
+    *                               want to update all records.
     *
     * @return boolean Returns true on success or false otherwise.
     */
-   public function update($tableName, $updateHash, $whereHash)
+   public function update($tableName, $updateHash, $whereHash = null)
    {
       $columns = $this->getTableColumns($tableName);
       if (!$columns)
@@ -450,18 +458,23 @@ class Database
       
       // Build where clause
       $whereClause = '';
-      foreach ($whereHash as $column => $value)
+      if (is_array($whereHash))
       {
-         if ($whereClause != '')
+         foreach ($whereHash as $column => $value)
          {
-            $whereClause .= ' AND ';
+            if ($whereClause != '')
+            {
+               $whereClause .= ' AND ';
+            }
+            $whereClause .= $column . ' = "' . $this->escape($value) . '"';
          }
-         $whereClause .= $column . ' = "' . $this->escape($value) . '"';
       }
       
       $q = 'UPDATE ' . $tableName . ' '
          . 'SET ' . $setClause . ' '
-         . 'WHERE ' . $whereClause;
+         . (($whereClause != '')
+            ? 'WHERE ' . $whereClause
+            : '');
       return $this->query($q);
    }
     
@@ -498,14 +511,14 @@ class Database
     * <var>QUERY_LOG_MAX_SIZE</var> records and then no longer add to the
     * <var>$queryLog</var> member variable
     *
-    * @param string  $query        The query ran
-    * @param boolean $isError      If there was an error
+    * @param string  $query      The query ran
+    * @param boolean $isError     If there was an error
     * @param integer $errorNumber  If an error it contains the MySQL error
-    *                              number.
+    *                       number.
     * @param string  $errorMessage If an error it contains the MySQL error
-    *                              message.
-    * @param integer $affected     The number of rows affected
-    * @param string  $time         The time it took to run the query.
+    *                       message.
+    * @param integer $affected    The number of rows affected
+    * @param string  $time       The time it took to run the query.
     *
     * @return void
     */
