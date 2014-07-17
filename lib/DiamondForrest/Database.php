@@ -402,7 +402,6 @@ class Database
       return $this->query($q);
    }
 
-
    /**
     * This function will attempt to update records into the database table
     * based on the <var>$tableName</var> and <var>$updateHash</var> array and
@@ -483,6 +482,47 @@ class Database
          . 'SET ' . $setClause . ' '
          . (($whereClause != '')
             ? 'WHERE ' . $whereClause
+            : '');
+      return $this->query($q);
+   }
+
+   /**
+    * This function will attempt to delete records in the database table
+    * based on the <var>$tableName</var> and <var>$whereHash</var> array.
+    *
+    * @param string     $tableName  The name of the table
+    * @param array|null $whereHash  A hash array of key/value pairs to
+    *                               be used in the where clause part of the
+    *                               update. The key is the column name and the
+    *                               value is the actual value to match
+    *                               against. Each item in the array will be
+    *                               added to a MySQL "AND" clause. If you need
+    *                               to use an "OR" clause or more complex
+    *                               expression, you will need to write your own
+    *                               query. This parameter is optional if you
+    *                               want to delete all records.
+    *
+    * @return boolean Returns true on success or false otherwise.
+    */
+   public function delete($tableName, $whereHash = null)
+   {
+      // Build where clause
+      $whereClause = '';
+      if (is_array($whereHash))
+      {
+         foreach ($whereHash as $column => $value)
+         {
+            if ($whereClause != '')
+            {
+               $whereClause .= ' AND ';
+            }
+            $whereClause .= $column . ' = "' . $this->escape($value) . '"';
+         }
+      }
+
+      $q = 'DELETE FROM ' . $tableName
+         . (($whereClause != '')
+            ? ' WHERE ' . $whereClause
             : '');
       return $this->query($q);
    }

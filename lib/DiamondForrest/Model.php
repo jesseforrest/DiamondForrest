@@ -174,4 +174,27 @@ abstract class Model
          $updateHash,
          $whereHash);
    }
+
+   /**
+    * This will attempt to delete a record in the table returned via the
+    * <code>getTableName()</code> function.
+    *
+    * @param array|null $whereHash  A hash array of key/value pairs to be used
+    *                               in the where clause part of the delete.
+    *                               The key is the column name and the value is
+    *                               the actual value to match against. Each item
+    *                               in the array will be added to a MySQL "AND"
+    *                               clause. If you need to use an "OR" clause or
+    *                               more complex expression, you will need to
+    *                               write your own query. This parameter is
+    *                               optional if you want to delete all records.
+    *
+    * @return boolean Whether or not the delete was successful.
+    */
+   static public function delete($whereHash = null)
+   {
+      return self::$database->update(
+         self::getTableName(),
+         $whereHash);
+   }
 }
