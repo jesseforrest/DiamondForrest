@@ -192,7 +192,7 @@ class Database
    }
 
    /**
-    * Takes a MySQL result array and returns it in a PHP aray
+    * Takes a MySQL result array and returns it in a PHP array
     *
     * @param object $recordset The MySQL result array
     *
@@ -276,7 +276,7 @@ class Database
     * @param array|null $whereHash A hash array of key/value pairs to
     *                              be used in the where clause part of the
     *                              update. The key is the column name and the
-    *                              value is theactual value to match against.
+    *                              value is the actual value to match against.
     *                              Each item in the array will be added to a
     *                              MySQL "AND" clause. If you need to use an
     *                              "OR" clause or more complex expression, you
@@ -284,10 +284,8 @@ class Database
     *                              parameter is optional if you want to select
     *                              all records.
     *
-    * @return array|null If one item is selected it will return an associative
-    * array of the key/value pairs.  If multiple items are selected it will
-    * return an array of arrays. If no items were found it will return
-    * <var>null</var>.
+    * @return array|null If record(s) found, an array of arrays will be
+    * returned. If no items were found it will return <var>null</var>.
     */
    public function select($tableName, $whereHash = null)
    {
@@ -325,19 +323,44 @@ class Database
          return null;
       }
 
-      // If one record
-      if ($numRecords == 1)
-      {
-         return $this->getNextRecord($r, self::FETCH_ASSOC);
-      }
-
-      // If multiple records
+      // If records
       $resultArray = array();
       while ($row = $this->getNextRecord($r, self::FETCH_ASSOC))
       {
          $resultArray[] = $row;
       }
       return $resultArray;
+   }
+
+   /**
+    * This function will attempt to select a record from the database table
+    * based on the <var>$tableName</var> and <var>$whereHash</var> array.
+    *
+    * @param string     $tableName The name of the table
+    * @param array|null $whereHash A hash array of key/value pairs to
+    *                              be used in the where clause part of the
+    *                              update. The key is the column name and the
+    *                              value is the actual value to match against.
+    *                              Each item in the array will be added to a
+    *                              MySQL "AND" clause. If you need to use an
+    *                              "OR" clause or more complex expression, you
+    *                              will need to write your own query. This
+    *                              parameter is optional if you want to select
+    *                              all records.
+    *
+    * @return array|null If results are found, this will return the first
+    * result found as an associative array of the key/value pairs.  If no items
+    * were found it will return <var>null</var>.
+    */
+   public function selectOne($tableName, $whereHash = null)
+   {
+      $results = $this->select($tableName, $whereHash);
+      if (!$results)
+      {
+         return null;
+      }
+
+      return $results[0];
    }
 
    /**
